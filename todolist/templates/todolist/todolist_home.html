@@ -1,0 +1,81 @@
+{% extends "newspapers/base.html" %}
+{% block content %}
+    {% for event in events %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <small class="text-muted">{{ event.start_time|date:"m/d/Y H:i" }} - {{ event.end_time|date:"m/d/Y H:i" }}</small>
+            </div>
+            <h2>{{ event.title }}</h2>
+            <p class="article-content">{{ event.description }}</p>
+
+            <div>
+              <a class="btn btn-outline-primary btn-sm mt-1 mb-1" href="{% url 'event-update' event.id %}">Update</a>
+              <a class="btn btn-outline-danger btn-sm mt-1 mb-1" href="{% url 'event-delete' event.id %}">Delete</a>
+            </div>
+          </div>
+        </article>
+    {% empty %}
+        <h4>No Events!</h4>
+    {% endfor %}
+    
+    {% if events %}
+
+      {% if events.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ events.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in events.paginator.page_range %}
+        {% if events.number == num %}
+          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > events.number|add:'-3' and num < events.number|add:'3' %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if events.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ events.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ events.paginator.num_pages }}">Last</a>
+      {% endif %}
+
+    {% endif %}
+{% endblock content %}
+
+
+{% block sidebar_topic %}
+<div class="content-section shadow p-3 mb-5 bg-white rounded">
+  <h4>Top 5 Topics</h4>
+  <p class='text-muted'>
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-light">1</li>
+      <li class="list-group-item list-group-item-light">2</li>
+      <li class="list-group-item list-group-item-light">3</li>
+      <li class="list-group-item list-group-item-light">4</li>
+      <li class="list-group-item list-group-item-light">5</li>
+    </ul>
+  </p>
+</div>
+{% endblock sidebar_topic%}
+
+{% block sidebar_todolist %}
+{% if user.is_authenticated %}
+<div class="content-section shadow p-3 mb-5 bg-white rounded">
+  <h4>Today's Events</h4>
+  <p class='text-muted'>
+    <ul class="list-group">
+      
+      {% for event in events_id %}
+        {% if today|date:"d" == event.start_time|date:"d" %}
+          <li class="list-group-item list-group-item-light">
+            {{ event.title }} 
+            <p><small class="text-muted">{{ event.start_time|date:"m/d/Y H:i" }} - {{ event.end_time|date:"m/d/Y H:i" }}</small></p>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+    </ul>
+  </p>
+</div>
+{% endif %}
+{% endblock sidebar_todolist%}

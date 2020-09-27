@@ -1,0 +1,83 @@
+{% extends "newspapers/base.html" %}
+{% block content %}
+    {% for article in articles %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <h5><a href="{{article.web_url}}">{{ article.headline.main }}</a></h5>
+              <small class="text-muted"> 
+                by
+                {{ article.byline.person.0.firstname }}
+                {% if article.byline.person.0.middlename %}
+                  {{ article.byline.person.0.middlename }} 
+                {% endif %}
+                {{ article.byline.person.0.lastname }}
+                on
+                {{ article.pub_date|date:"M d, Y" }}
+              </small>
+            </div>
+            <p class="article-content">{{ article.abstract }}</p>
+          </div>
+        </article>
+    {% endfor %}
+
+    {% if articles %}
+
+      {% if articles.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ articles.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in articles.paginator.page_range %}
+        {% if articles.number == num %}
+          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > articles.number|add:'-3' and num < articles.number|add:'3' %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if articles.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ articles.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ articles.paginator.num_pages }}">Last</a>
+      {% endif %}
+
+    {% endif %}
+{% endblock content %}
+
+
+{% block sidebar_topic %}
+<div class="content-section shadow p-3 mb-5 bg-white rounded">
+  <h4>Top 5 Topics</h4>
+  <p class='text-muted'>
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-light">1</li>
+      <li class="list-group-item list-group-item-light">2</li>
+      <li class="list-group-item list-group-item-light">3</li>
+      <li class="list-group-item list-group-item-light">4</li>
+      <li class="list-group-item list-group-item-light">5</li>
+    </ul>
+  </p>
+</div>
+{% endblock sidebar_topic%}
+
+{% block sidebar_todolist %}
+{% if user.is_authenticated %}
+<div class="content-section shadow p-3 mb-5 bg-white rounded">
+  <h4>Today's Events</h4>
+  <p class='text-muted'>
+    <ul class="list-group">
+      
+      {% for event in events_id %}
+        {% if today|date:"d" == event.start_time|date:"d" %}
+          <li class="list-group-item list-group-item-light">
+            {{ event.title }} 
+            <p><small class="text-muted">{{ event.start_time|date:"m/d/Y H:i" }} - {{ event.end_time|date:"m/d/Y H:i" }}</small></p>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+    </ul>
+  </p>
+</div>
+{% endif %}
+{% endblock sidebar_todolist%}

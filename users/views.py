@@ -4,6 +4,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
+from todolist.models import Todolist
+
+import datetime
+
 # Create your views here.
 
 def register(request):
@@ -17,7 +21,9 @@ def register(request):
     else:
         form = UserRegisterForm()
 
-    return render(request, 'users/register.html', {'form': form})
+    events_id = Todolist.objects.filter(author_id=request.user.id).order_by("start_time")
+
+    return render(request, 'users/register.html', {'form': form, 'events_id': events_id, 'today': datetime.datetime.now()})
 
 @login_required
 def profile(request):
@@ -36,8 +42,12 @@ def profile(request):
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
 
+    events_id = Todolist.objects.filter(author_id=request.user.id).order_by("start_time")
+    
     content = {
         'user_form': user_form,
-        'profile_form': profile_form
+        'profile_form': profile_form,
+        'events_id': events_id,
+        'today': datetime.datetime.now()
     }
     return render(request, 'users/profile.html', content)

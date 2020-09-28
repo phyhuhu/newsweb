@@ -55,6 +55,14 @@ class TodolistCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['events_id'] = Todolist.objects.filter(author_id=self.request.user.id).order_by("start_time")
+        context['today'] = datetime.datetime.now()
+        return context
+
 class TodolistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Todolist
     form_class = TodolistForm
@@ -68,6 +76,14 @@ class TodolistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         event = self.get_object()
         return  self.request.user == event.author
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['events_id'] = Todolist.objects.filter(author_id=self.request.user.id).order_by("start_time")
+        context['today'] = datetime.datetime.now()
+        return context
+
 class TodolistDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Todolist
     success_url = '/todolist/'
@@ -75,3 +91,11 @@ class TodolistDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         event = self.get_object()
         return  self.request.user == event.author
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['events_id'] = Todolist.objects.filter(author_id=self.request.user.id).order_by("start_time")
+        context['today'] = datetime.datetime.now()
+        return context

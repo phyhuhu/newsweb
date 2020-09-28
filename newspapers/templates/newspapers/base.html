@@ -25,8 +25,6 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <!-- <a class="nav-item nav-link" href="#">Weather Broadcast</a> -->
-              <a class="nav-item nav-link" href="#">News Topics</a>
               {% if user.is_authenticated %}
                 <a class="nav-item nav-link" href="{% url 'todolist-home' %}">Todo List</a>
               {% endif %}
@@ -61,18 +59,7 @@
         
         <div class="col-md-4">
 
-          <!-- <div class="content-section shadow p-3 mb-5 bg-white rounded">
-            <h3>Will Show Today's Weather</h3>
-            <p class='text-muted'>
-              <ul class="list-group">
-                <li class="list-group-item list-group-item-light">Weather Broadcast</li>
-                <li class="list-group-item list-group-item-light">News Topics</li>
-                <li class="list-group-item list-group-item-light">Todo List</li>
-              </ul>
-            </p>
-          </div> -->
-
-          {% block sidebar_topic %}{% endblock %}
+          {% block sidebar_weather %}{% endblock %}
           {% block sidebar_todolist %}{% endblock %}
 
         </div>

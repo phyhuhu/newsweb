@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 
 from .models import Todolist
 from .forms import TodolistForm
+from newspapers.models import Forecast
 
 import datetime
 
@@ -43,7 +44,23 @@ def todolist_home(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'todolist/todolist_home.html', {'events': page_obj, 'events_id': events_id, 'today': datetime.datetime.now()})
+    # weather
+    latest_forecast = Forecast.objects.get(city='Houston')
+
+    content = {
+        'events': page_obj,
+        'events_id': events_id,
+        'today': datetime.datetime.now(),
+        'weather': {
+            'main': latest_forecast.main, #weather['weather'][0]['main'],
+            'description': latest_forecast.description, #weather['weather'][0]['description'],
+            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
+            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'time': latest_forecast.timestamp
+            }
+        }
+
+    return render(request, 'todolist/todolist_home.html', content)
 
 
 class TodolistCreateView(LoginRequiredMixin, CreateView):
@@ -61,6 +78,17 @@ class TodolistCreateView(LoginRequiredMixin, CreateView):
         # Add in a QuerySet of all the books
         context['events_id'] = Todolist.objects.filter(author_id=self.request.user.id).order_by("start_time")
         context['today'] = datetime.datetime.now()
+
+        # weather
+        latest_forecast = Forecast.objects.get(city='Houston')
+        context['weather']={
+            'main': latest_forecast.main, #weather['weather'][0]['main'],
+            'description': latest_forecast.description, #weather['weather'][0]['description'],
+            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
+            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'time': latest_forecast.timestamp
+            }
+
         return context
 
 class TodolistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -82,6 +110,17 @@ class TodolistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # Add in a QuerySet of all the books
         context['events_id'] = Todolist.objects.filter(author_id=self.request.user.id).order_by("start_time")
         context['today'] = datetime.datetime.now()
+
+        # weather
+        latest_forecast = Forecast.objects.get(city='Houston')
+        context['weather']={
+            'main': latest_forecast.main, #weather['weather'][0]['main'],
+            'description': latest_forecast.description, #weather['weather'][0]['description'],
+            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
+            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'time': latest_forecast.timestamp
+            }
+
         return context
 
 class TodolistDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -98,4 +137,15 @@ class TodolistDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         # Add in a QuerySet of all the books
         context['events_id'] = Todolist.objects.filter(author_id=self.request.user.id).order_by("start_time")
         context['today'] = datetime.datetime.now()
+
+        # weather
+        latest_forecast = Forecast.objects.get(city='Houston')
+        context['weather']={
+            'main': latest_forecast.main, #weather['weather'][0]['main'],
+            'description': latest_forecast.description, #weather['weather'][0]['description'],
+            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
+            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'time': latest_forecast.timestamp
+            }
+            
         return context

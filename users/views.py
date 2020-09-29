@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 from todolist.models import Todolist
+from newspapers.models import Forecast
 
 import datetime
 
@@ -23,7 +24,23 @@ def register(request):
 
     events_id = Todolist.objects.filter(author_id=request.user.id).order_by("start_time")
 
-    return render(request, 'users/register.html', {'form': form, 'events_id': events_id, 'today': datetime.datetime.now()})
+    # weather
+    latest_forecast = Forecast.objects.get(city='Houston')
+
+    content = {
+        'form': form,
+        'events_id': events_id,
+        'today': datetime.datetime.now(),
+        'weather': {
+            'main': latest_forecast.main, #weather['weather'][0]['main'],
+            'description': latest_forecast.description, #weather['weather'][0]['description'],
+            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
+            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'time': latest_forecast.timestamp
+            }
+        }
+
+    return render(request, 'users/register.html', context)
 
 @login_required
 def profile(request):
@@ -43,11 +60,21 @@ def profile(request):
         profile_form = ProfileUpdateForm(instance=request.user.profile)
 
     events_id = Todolist.objects.filter(author_id=request.user.id).order_by("start_time")
+
+    # weather
+    latest_forecast = Forecast.objects.get(city='Houston')
     
     content = {
         'user_form': user_form,
         'profile_form': profile_form,
         'events_id': events_id,
-        'today': datetime.datetime.now()
+        'today': datetime.datetime.now(),
+        'weather': {
+            'main': latest_forecast.main, #weather['weather'][0]['main'],
+            'description': latest_forecast.description, #weather['weather'][0]['description'],
+            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
+            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'time': latest_forecast.timestamp
+            }
     }
     return render(request, 'users/profile.html', content)

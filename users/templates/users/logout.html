@@ -11,6 +11,24 @@
 {% endblock content %}
 
 
+{% block sidebar_weather %}
+{% if user.is_authenticated %}
+<div class="content-section shadow p-3 mb-5 bg-white rounded">
+  <h4>Today's Weather: {{ weather.main }}</h4>
+  <small class="text-muted">{{ weather.time }} UTC</small>
+  <p class='text-muted'>
+    <ul class="list-group">
+      
+      <li class="list-group-item list-group-item-light">Description: {{ weather.description }}</li>
+      <li class="list-group-item list-group-item-light">Temperatue: {{ weather.temperatue }} F</li>
+      <li class="list-group-item list-group-item-light">Wind: {{ weather.wind }} Miles/Per Hour</li>
+
+    </ul>
+  </p>
+</div>
+{% endif %}
+{% endblock sidebar_weather%}
+
 {% block sidebar_todolist %}
 {% if user.is_authenticated %}
 <div class="content-section shadow p-3 mb-5 bg-white rounded">

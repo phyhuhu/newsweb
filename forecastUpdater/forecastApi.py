@@ -2,18 +2,16 @@ import requests, json
 from newspapers.models import Forecast
 from django.contrib.auth.models import User
 from datetime import datetime 
+from .secret import KEY_WEATHER
 
 def _get_forecast_json():
+    # get weather information from openweathermap.org
+    URL = f'http://api.openweathermap.org/data/2.5/weather?q=Houston,us&appid={KEY_WEATHER}'
+    r = requests.get(URL)
 
-    # URL = 
-
-    # r = requests.get(URL)
-
-    with open('weather.txt') as json_file:
-        r = json.load(json_file)
     try:
-        # r.raise_for_status()
-        return r #r.json()
+        r.raise_for_status()
+        return r.json()
     except:
         return None
 
@@ -28,7 +26,7 @@ def update_forecast():
             wind_in_celsius = str(float("{:.2f}".format(json['wind']['speed'] *3600 / 1609.344)))
 
             if len(Forecast.objects.filter(city='Houston'))!=0:
-
+                # update the weather in database
                 Forecast.objects.filter(city='Houston').update(timestamp=datetime.now())
                 Forecast.objects.filter(city='Houston').update(temperatue=temp_in_celsius)
                 Forecast.objects.filter(city='Houston').update(wind=wind_in_celsius)
@@ -38,6 +36,7 @@ def update_forecast():
 
             else:
                 
+                # save weather in database
                 new_forecast = Forecast(
                     main = json['weather'][0]['main'],
                     description = json['weather'][0]['description'],

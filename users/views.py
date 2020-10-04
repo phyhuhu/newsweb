@@ -40,7 +40,7 @@ def register(request):
             }
         }
 
-    return render(request, 'users/register.html', context)
+    return render(request, 'users/register.html', content)
 
 @login_required
 def profile(request):

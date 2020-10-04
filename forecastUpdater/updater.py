@@ -4,5 +4,5 @@ from forecastUpdater import forecastApi
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(forecastApi.update_forecast, 'interval', minutes=1)
+    scheduler.add_job(forecastApi.update_forecast, 'interval', minutes=10)
     scheduler.start()

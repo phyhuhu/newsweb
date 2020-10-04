@@ -13,28 +13,6 @@ from newspapers.models import Forecast
 
 import datetime
 
-# Create your views here.
-
-# class TodolistListView(ListView):
-#     model = Todolist
-#     template_name = 'todolist/todolist_home.html'
-#     context_object_name = 'events'
-#     # ordering = ['-start_time']
-#     paginate_by = 5
-
-#     def get_queryset(self):
-#         filter_val = self.request.user.id
-#         order = self.request.GET.get('orderby', 'start_time')
-#         new_context = Todolist.objects.filter(author_id=filter_val).order_by(order)
-#         return new_context
-
-#     def get_context_data(self, **kwargs):
-#         # Call the base implementation first to get a context
-#         context = super().get_context_data(**kwargs)
-#         # Add in a QuerySet of all the books
-#         context['events_id'] = Todolist.objects.filter(author_id=self.request.user.id).order_by("start_time")
-#         context['today'] = datetime.datetime.now()
-#         return context
 
 def todolist_home(request):
     events_id = Todolist.objects.filter(author_id=request.user.id).order_by("start_time")
@@ -52,10 +30,10 @@ def todolist_home(request):
         'events_id': events_id,
         'today': datetime.datetime.now(),
         'weather': {
-            'main': latest_forecast.main, #weather['weather'][0]['main'],
-            'description': latest_forecast.description, #weather['weather'][0]['description'],
-            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
-            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'main': latest_forecast.main, 
+            'description': latest_forecast.description, 
+            'temperatue': latest_forecast.temperatue,
+            'wind': latest_forecast.wind,
             'time': latest_forecast.timestamp
             }
         }
@@ -82,10 +60,10 @@ class TodolistCreateView(LoginRequiredMixin, CreateView):
         # weather
         latest_forecast = Forecast.objects.get(city='Houston')
         context['weather']={
-            'main': latest_forecast.main, #weather['weather'][0]['main'],
-            'description': latest_forecast.description, #weather['weather'][0]['description'],
-            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
-            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'main': latest_forecast.main, 
+            'description': latest_forecast.description, 
+            'temperatue': latest_forecast.temperatue, 
+            'wind': latest_forecast.wind, 
             'time': latest_forecast.timestamp
             }
 
@@ -114,10 +92,10 @@ class TodolistUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # weather
         latest_forecast = Forecast.objects.get(city='Houston')
         context['weather']={
-            'main': latest_forecast.main, #weather['weather'][0]['main'],
-            'description': latest_forecast.description, #weather['weather'][0]['description'],
-            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
-            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'main': latest_forecast.main, 
+            'description': latest_forecast.description, 
+            'temperatue': latest_forecast.temperatue, 
+            'wind': latest_forecast.wind, 
             'time': latest_forecast.timestamp
             }
 
@@ -141,10 +119,10 @@ class TodolistDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         # weather
         latest_forecast = Forecast.objects.get(city='Houston')
         context['weather']={
-            'main': latest_forecast.main, #weather['weather'][0]['main'],
-            'description': latest_forecast.description, #weather['weather'][0]['description'],
-            'temperatue': latest_forecast.temperatue, #float("{:.2f}".format(float(weather['main']['temp']) * 1.8 - 459.67)),
-            'wind': latest_forecast.wind, #float("{:.2f}".format(float(weather['wind']['speed'])*3600/1609.344)),
+            'main': latest_forecast.main, 
+            'description': latest_forecast.description,
+            'temperatue': latest_forecast.temperatue, 
+            'wind': latest_forecast.wind, 
             'time': latest_forecast.timestamp
             }
             
